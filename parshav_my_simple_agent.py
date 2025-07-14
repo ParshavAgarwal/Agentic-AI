@@ -1,8 +1,4 @@
 
-!pip install google-generativeai --quiet
-!pip install ipywidgets --quiet #create beautiful UI
-
-
 import google.generativeai as genai
 import ipywidgets as widgets
 from IPython.display import display, Markdown
@@ -13,15 +9,13 @@ API_KEY = "AIzaSyDSQYu2SzCdZQvhJm6BL6vwyZNfJHhkbaU"
 genai.configure(api_key= API_KEY),
 model = genai.GenerativeModel("gemini-2.5-flash")
 
-"""Step 4: Define the input form"""
-
 topic_input = widgets.Text(
     description = "TOPIC",
     layout = widgets.widgets.Layout( width = "400px"))
 
 tone_input = widgets.Dropdown(
     description = "TONE",
-    options = ['witty', 'casual', 'normal', 'proffesional', 'angry', 'sarcastic'],
+    options = ['witty', 'casual', 'normal', 'professional', 'angry', 'sarcastic'],
     layout = widgets.widgets.Layout( width = "400px")
 )
 
