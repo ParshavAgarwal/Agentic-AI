@@ -1,14 +1,15 @@
-
+##Importing Libs
 import google.generativeai as genai
 import ipywidgets as widgets
 from IPython.display import display, Markdown
 
 
-
+##Setting up Model
 API_KEY = "AIzaSyDSQYu2SzCdZQvhJm6BL6vwyZNfJHhkbaU"
 genai.configure(api_key= API_KEY),
 model = genai.GenerativeModel("gemini-2.5-flash")
 
+##The Layout
 topic_input = widgets.Text(
     description = "TOPIC",
     layout = widgets.widgets.Layout( width = "400px"))
@@ -38,6 +39,7 @@ submit_button = widgets.Button(
 
 output = widgets.Output()
 
+##Defining Prompt and Generating a response
 def generate_tweet(b):
   output.clear_output()
   prompt = f"""
@@ -60,7 +62,7 @@ def generate_tweet(b):
 submit_button.on_click(generate_tweet)
 
 
-
+##Creating the form and displaying
 form = widgets.VBox([
     widgets.HTML(value= "<h3>Agent to Generate Tweet </h3>"),
     topic_input,
