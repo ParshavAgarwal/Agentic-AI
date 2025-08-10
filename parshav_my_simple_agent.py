@@ -5,7 +5,7 @@ from IPython.display import display, Markdown
 
 
 ##Setting up Model
-API_KEY = "AIzaSyDSQYu2SzCdZQvhJm6BL6vwyZNfJHhkbaU"
+API_KEY = "Your API"
 genai.configure(api_key= API_KEY),
 model = genai.GenerativeModel("gemini-2.5-flash")
 
