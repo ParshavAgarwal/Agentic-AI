@@ -1,0 +1,627 @@
+{
+  "name": "Hospital Appointment System(1st prototype)",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Appointment Form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Mobile Number",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email-id",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Symptoms",
+              "fieldType": "textarea",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Preferred Date",
+              "fieldType": "date",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "152247b2-21ee-463d-9f90-b7ed000c8a1a",
+      "name": "On form submission",
+      "webhookId": "2bd3cd01-c005-439d-a88e-c336279f5163"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Classify the following symptoms into one of the medical categories:\nSymptoms: {{ $json.Symptoms }}\nCategories: General, Mental Health, Pediatrics, Dermatology, Cardiology, Orthopedics, ENT, Emergency\nReturn only one category name.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -112
+      ],
+      "id": "a2ec7f7b-69cd-4604-9a73-edf6868025be",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rjF9XnOHIdbA7sdC",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1cb27DSh93j0xFrEORqj3WMWxNACzpo7wmmB7Me23yDM",
+          "mode": "list",
+          "cachedResultName": "Hospital Receptionist (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cb27DSh93j0xFrEORqj3WMWxNACzpo7wmmB7Me23yDM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 704540033,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cb27DSh93j0xFrEORqj3WMWxNACzpo7wmmB7Me23yDM/edit#gid=704540033"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.submittedAt }}",
+            "Name": "={{ $json.Name }}",
+            "Mobile number": "={{ $json['Mobile Number'] }}",
+            "Email-id": "={{ $json['Email-id'] }}",
+            "Symptoms": "={{ $json.Symptoms }}",
+            "Preferred Date": "={{ $json['Preferred Date'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Mobile number",
+              "displayName": "Mobile number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email-id",
+              "displayName": "Email-id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Symptoms",
+              "displayName": "Symptoms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Date",
+              "displayName": "Preferred Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        224,
+        -112
+      ],
+      "id": "26933d7a-404e-432a-bcda-d253ddbb6969",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ub48pNGXLdCzwo4G",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.content.parts[0].text }}",
+                    "rightValue": "General",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "ff4dfe81-fdaa-4723-a221-865d457b454b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4c96795a-6c3b-4f0b-987f-bc815828d508",
+                    "leftValue": "={{ $json.content.parts[0].text }}",
+                    "rightValue": "Emergency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        848,
+        -112
+      ],
+      "id": "fb0bfa67-050f-4dbf-86dd-f1cdcdb608ad",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1z-F3f8PNocM2EWLGn_iW-YN65KI5LZYrNCdvBdU_Mag",
+          "mode": "list",
+          "cachedResultName": "Doctor's Details",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z-F3f8PNocM2EWLGn_iW-YN65KI5LZYrNCdvBdU_Mag/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "General Ward",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z-F3f8PNocM2EWLGn_iW-YN65KI5LZYrNCdvBdU_Mag/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $('On form submission').item.json['Preferred Date'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1072,
+        -112
+      ],
+      "id": "f1030909-6bad-46e7-849d-5d9d140b7611",
+      "name": "General Ward",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ub48pNGXLdCzwo4G",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an appointment scheduling assistant for a hospital.\n\nYour job is to assign the earliest available appointment time slot to a patient based on the following rules:\n\n1. The hospital operates from 08:00 to 22:00.\n2. Appointment duration is fixed at 20 minutes each.\n3. There is a break from 13:00 to 14:00 — no appointments can be booked during this break.\n4. You will be given:\n   - The preferred booking date\n   - A list of already booked time slots for that date (e.g., [\"08:00\", \"08:20\", \"09:40\", \"15:20\"]).\n5. You must find the earliest available slot **after the current time of booking** that is **not in the booked list**.\n6. Return only the time slot in 24-hour HH:MM format (e.g., \"09:20\").\n7. Do not return anything else — no explanation, no text, just the time slot.\n\nExamples:\n- Input booked list: [\"08:00\", \"08:20\"], current booking time is 08:10 → Output: 08:40\n- Input booked list: [\"08:00\", \"08:20\", \"08:40\"], current booking time is 08:50 → Output: 09:00\n- Input booked list: [\"08:00\", \"08:20\", \"08:40\", \"09:00\"], current booking time is 08:55 → Output: 09:20\n\nDate - {{ $('General Ward').item.json.Date }}\nTime slots - {{ $json['time slot'] }}\n\nNow, based on the booked time slots you are given, return the earliest available time slot.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        1520,
+        -112
+      ],
+      "id": "6c286a93-b2aa-4dbb-a900-5f9d91c6d6fe",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        112
+      ],
+      "id": "1fb9fac3-b8ef-46d4-8f15-0839e4af5511",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rjF9XnOHIdbA7sdC",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1z-F3f8PNocM2EWLGn_iW-YN65KI5LZYrNCdvBdU_Mag",
+          "mode": "list",
+          "cachedResultName": "Doctor's Details",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z-F3f8PNocM2EWLGn_iW-YN65KI5LZYrNCdvBdU_Mag/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "General Ward",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z-F3f8PNocM2EWLGn_iW-YN65KI5LZYrNCdvBdU_Mag/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('General Ward').item.json.row_number }}",
+            "Time": "={{ $('General Ward').item.json.Time }}, {{ $json.output }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Doctor's Name",
+              "displayName": "Doctor's Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1920,
+        -112
+      ],
+      "id": "b34b809c-79ea-4291-8f58-1c3bbeb3156f",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ub48pNGXLdCzwo4G",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "02d3677f-ea1b-4553-8d60-fda3b557419b",
+              "name": "time slot",
+              "value": "={{ $json.Time }}",
+              "type": "string"
+            },
+            {
+              "id": "b52e1ce4-a12a-422e-bc87-569eb6fbdae8",
+              "name": "doctor's name",
+              "value": "={{ $json['Doctor\\'s Name'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1296,
+        -112
+      ],
+      "id": "e9ea8760-0861-469b-9895-576dc4bc0ca4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Email-id'] }}",
+        "subject": "Doctor's Appointment",
+        "emailType": "text",
+        "message": "={{ $json.content.parts[0].text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2544,
+        -112
+      ],
+      "id": "d53b1cfe-d025-46dd-8741-ca776094de66",
+      "name": "Send a message",
+      "webhookId": "21bc2909-bad3-4842-94cd-a98b73ea2118",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vHNuuLgqJ6LnU21p",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a hospital assistant whose duty is to send the email regarding the confirmation of their appointment.\n\nIt should be properly structured in 3 sections - intro, body, CTA.\n\nYou only have to provide me with the Body of the email only (not the subject).\n\nAlso, you will give the final email, do not ask for more information.\n\nYou will be provided with the\nPatient's name - {{ $('On form submission').item.json.Name }}\nPatient's Symptoms - {{ $('On form submission').item.json.Symptoms }}\nPreferred Date(given by patient) - {{ $('On form submission').item.json['Preferred Date'] }}\nDoctor assigned - {{ $('Edit Fields').item.json['doctor\\'s name'] }}\nTime slot allotted—{{ $('AI Agent').item.json.output }}\n\nGive me the final e-mail(body) you should send to the patient to confirm their booking\n\nExample - \"We are pleased to confirm your appointment at our hospital. Your request for an appointment regarding your symptoms of fever has been successfully scheduled.\n\nYou are confirmed to see Dr. B Shah on August 13, 2025, at 08:00. We recommend arriving 15 minutes prior to your scheduled time to allow for check-in procedures. Please remember to bring a valid ID and any relevant medical history or current medication lists.\n\nWe look forward to assisting you. Should you need to reschedule or cancel your appointment, please contact us as soon as possible. Your timely communication is greatly appreciated.\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        2144,
+        -112
+      ],
+      "id": "b88686cd-e2d4-4959-8426-ef514b888738",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rjF9XnOHIdbA7sdC",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "General Ward",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "General Ward": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "01133fe9-51ba-4f3d-a559-d96074be6ac9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1bef1199e55b6d7dc5d681e980e5ba5854f61fe103c3282b153b4cd69c3e59b9"
+  },
+  "id": "v68lwVfyzrluLGH7",
+  "tags": []
+}
